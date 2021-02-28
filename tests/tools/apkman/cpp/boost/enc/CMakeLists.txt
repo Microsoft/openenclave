@@ -10,6 +10,10 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_custom_target(boost
+  COMMAND apkman add boost-dev boost-static
+  DEPENDS apkman-init)
+
 # Compile boost test code using apkman's clang compiler.
 # Current machine's c++ compiler may not be up to date to compile
 # boost.
@@ -17,7 +21,7 @@ add_custom_command(
   OUTPUT boost.o
   COMMAND apkman exec clang++ -o boost.o -g -Og -c
                       ${CMAKE_CURRENT_SOURCE_DIR}/boost.cpp
-  DEPENDS boost.cpp)
+  DEPENDS boost.cpp boost)
 
 add_enclave(
   TARGET
@@ -28,10 +32,6 @@ add_enclave(
   enc.cpp
   boost.o
   ${CMAKE_CURRENT_BINARY_DIR}/test_t.c)
-
-add_custom_target(boost
-  COMMAND apkman add boost-dev boost-static
-  DEPENDS apkman-init)
 
 add_dependencies(boost_enc boost)
 
