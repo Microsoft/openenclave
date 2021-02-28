@@ -7,7 +7,7 @@
 
 void boost_test();
 
-int enc_main(int argc, const char** argv)
+int enc_main(int argc,  char** argv)
 {
     OE_UNUSED(argc);
     OE_UNUSED(argv);

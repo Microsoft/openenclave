@@ -8,7 +8,7 @@
 
 #include "test_u.h"
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
     oe_result_t result;
     oe_enclave_t* enclave = NULL;

@@ -51,5 +51,8 @@ target_link_libraries(
   libgcc.a
   oelibcxx # For libunwind which has been patched for enclaves
   oelibc
+  # LLVM's ld can optimize away a memory leak related to iostream not
+  # cleaning up objects.
+  -fuse-ld=lld
   # Emit warnings for unresolved symbols.
   -Wl,--warn-unresolved-symbols)

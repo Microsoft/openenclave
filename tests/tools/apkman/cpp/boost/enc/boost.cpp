@@ -193,10 +193,6 @@ void boost_test()
 	main_serialize();
     }
 
-    std::cout<<"boost tests completed\n\n\n";
+    std::cout<<"boost tests completed\n";
 }
 
-int main()
-{
-    boost_test();
-}

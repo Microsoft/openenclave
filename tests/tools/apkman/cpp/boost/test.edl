@@ -11,6 +11,6 @@ enclave {
 #endif
 
     trusted {
-        public int enc_main(int argc, [user_check] const char** argv);
+        public int enc_main(int argc, [user_check] char** argv);
     };
 };
