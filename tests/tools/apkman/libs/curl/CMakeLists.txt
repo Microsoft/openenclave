@@ -7,4 +7,4 @@ if (BUILD_ENCLAVES)
   add_subdirectory(enc)
 endif ()
 
-#add_enclave_test(tests/tools/apkman/curl curl_host curl_enc)
+add_enclave_test(tests/tools/apkman/curl curl_host curl_enc)
