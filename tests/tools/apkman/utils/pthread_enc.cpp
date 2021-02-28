@@ -47,7 +47,6 @@ static int _pthread_create_hook(
         _thread_functions.push_back(
             [start_routine, arg]() { return start_routine(arg); });
         enc_key = _enc_key = ++_next_enc_thread_id;
-        printf("_pthread_create_hook(): enc_key is %lu\n", enc_key);
         // Populate the enclave key to thread id map in advance
         enc_value = &_key_to_thread_id_map[enc_key];
 
@@ -77,12 +76,6 @@ static int _pthread_create_hook(
     }
     *enc_thread = *enc_value;
 
-    printf(
-        "_pthread_create_hook(): pthread_create success for enc_key=%lu; "
-        "thread id=%#10lx\n",
-        _enc_key,
-        *enc_thread);
-
     return 0;
 }
 
@@ -110,11 +103,6 @@ static int _pthread_join_hook(pthread_t enc_thread, void**)
         join_enc_key = it->first;
         _thread_args[join_enc_key - 1].enc_key = join_enc_key;
     }
-
-    printf(
-        "_pthread_join_hook(): enc_key for thread ID %#10lx is %ld\n",
-        enc_thread,
-        join_enc_key);
 
     int join_ret = 0;
     if (host_join_thread(&join_ret, join_enc_key) != OE_OK)
@@ -164,11 +152,6 @@ static int _pthread_detach_hook(pthread_t enc_thread)
         det_enc_key = it->first;
         _thread_args[det_enc_key - 1].enc_key = det_enc_key;
     }
-
-    printf(
-        "_pthread_detach_hook(): enc_key for thread ID %#10lx is %ld\n",
-        enc_thread,
-        det_enc_key);
 
     int det_ret = 0;
     if (host_detach_thread(&det_ret, det_enc_key) != OE_OK)

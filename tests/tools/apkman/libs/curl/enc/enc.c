@@ -40,7 +40,10 @@ int main(int argc, char** argv)
 	    test_curl(curl, argv[i]);
     }
     else
-	test_curl(curl, "www");
+    {
+	// The first website.
+	test_curl(curl, "http://info.cern.ch");
+    }
     
     curl_easy_cleanup(curl);
     return 0;
