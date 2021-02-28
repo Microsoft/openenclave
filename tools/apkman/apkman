@@ -23,9 +23,9 @@ BUILDER=user
 # as sudo, then we use $SUDO_USER's home folder and not the
 # root's home folder.
 if [ ! -z "$SUDO_USER" ]; then
-  HOME_DIR=/home/${SUDO_USER}
+    HOME_DIR=/home/${SUDO_USER}
 else
-  HOME_DIR=~
+    HOME_DIR=~
 fi
 
 APKMAN_DIR=${HOME_DIR}/.apkman
@@ -33,7 +33,7 @@ CURRENT_DIR=`pwd`
 
 print_usage()
 {
-  usage="\
+    usage="\
 apkman -  package manager and toolbox for enclave development.
           version 0.1a, alpine-linux 3.13, proot v5.2.0-alpha-8c0ccf7d
 
@@ -118,32 +118,32 @@ Help:
  help       Print usage.
 "
 
-  echo "$usage"
+    echo "$usage"
 }
 
 ensure_apkman_dir()
 {
-   mkdir -p "$APKMAN_DIR" && cd "$APKMAN_DIR"
-   if [ ! -z "$SUDO_USER" ]; then
-     chown $SUDO_USER:$SUDO_USER $APKMAN_DIR
-   fi
+    mkdir -p "$APKMAN_DIR" && cd "$APKMAN_DIR"
+    if [ ! -z "$SUDO_USER" ]; then
+	chown $SUDO_USER:$SUDO_USER $APKMAN_DIR
+    fi
 }
 
 ensure_dependencies()
 {
-   BINS="tar unzip wget"
-   for bin in $BINS; do
-     if ! command -v "$bin" > /dev/null; then
-       echo "${bin} not found. Install [${BINS}] to proceed."
-       exit 1
-     fi
-   done
+    BINS="tar unzip wget"
+    for bin in $BINS; do
+	if ! command -v "$bin" > /dev/null; then
+	    echo "${bin} not found. Install [${BINS}] to proceed."
+	    exit 1
+	fi
+    done
 
-   export PATH=./dist:$PATH
-   if ! command -v dist/proot > /dev/null; then
-     wget "${PROOT_URL}" -O proot.zip
-     unzip proot.zip
-   fi
+    export PATH=./dist:$PATH
+    if ! command -v dist/proot > /dev/null; then
+	wget "${PROOT_URL}" -O proot.zip
+	unzip proot.zip
+    fi
 }
 
 enter_chroot()
@@ -153,8 +153,11 @@ enter_chroot()
     mount --bind /dev/shm "${ALPINE_FS}/dev/shm"
     mount --bind /proc    "${ALPINE_FS}/proc"
     mount --bind /sys     "${ALPINE_FS}/sys"
-    export PS1="apkman chroot \w# "
-    sudo chroot "${ALPINE_FS}" /bin/sh
+    SHELL=/bin/sh
+    TERM=xterm-256color
+    PS1="apkman chroot \w# "
+    sudo chroot "${ALPINE_FS}" /usr/bin/env -i \
+	 TERM=$TERM SHELL=$SHELL PS1="$PS1" /bin/sh
     umount --recursive "${ALPINE_FS}/dev"
     umount --recursive "${ALPINE_FS}/proc"
     umount --recursive "${ALPINE_FS}/sys"
@@ -162,37 +165,37 @@ enter_chroot()
 
 proot_exec()
 {
-  export SHELL=/bin/sh
-  export TERM=xterm-256color
-  export PS1="apkman \w$ "
-  proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
-        -0 \
-        -r alpine-fs \
-        -w / \
-        "$@"
+    export SHELL=/bin/sh
+    export TERM=xterm-256color
+    export PS1="apkman \w$ "
+    proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
+          -0 \
+          -r alpine-fs \
+          -w / \
+          "$@"
 }
 
 proot_exec_host()
 {
-  export SHELL=/bin/sh
-  export TERM=xterm-256color
-  export PS1="apkman \w$ "
-  proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
-        -b /home/$USER \
-        -r alpine-fs \
-        -w "$CURRENT_DIR" \
-        "$@"
+    export SHELL=/bin/sh
+    export TERM=xterm-256color
+    export PS1="apkman \w$ "
+    proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
+          -b /home/$USER \
+          -r alpine-fs \
+          -w "$CURRENT_DIR" \
+          "$@"
 }
 
 setup_alpine_fs()
 {
-  if ! test -d "${ALPINE_FS}"; then
-    wget "$ALPINE_ROOTFS_URL" -O alpine-minirootfs.tar.gz
-    sh -c "mkdir -p tmp && cd tmp && tar xf ../alpine-minirootfs.tar.gz"
-    cp /etc/resolv.conf tmp/etc/resolv.conf
-    mv tmp "${ALPINE_FS}"
-    proot_exec sh -c "apk update && apk add shadow bash neofetch"
-  fi
+    if ! test -d "${ALPINE_FS}"; then
+	wget "$ALPINE_ROOTFS_URL" -O alpine-minirootfs.tar.gz
+	sh -c "mkdir -p tmp && cd tmp && tar xf ../alpine-minirootfs.tar.gz"
+	cp /etc/resolv.conf tmp/etc/resolv.conf
+	mv tmp "${ALPINE_FS}"
+	proot_exec sh -c "apk update && apk add shadow bash neofetch"
+    fi
 }
 
 if [ ! -z "$SUDO_USER" ]; then
