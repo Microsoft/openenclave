@@ -30,12 +30,11 @@ private:
     // is a type of input archive the & operator is defined similar to >>.
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & degrees;
-        ar & minutes;
-	// TODO: Fix libcxx incompatibility for float serialization.
-        // ar & seconds;
-    }
+	{
+	    ar & degrees;
+	    ar & minutes;
+	    ar & seconds;
+	}
     int degrees;
     int minutes;
     float seconds;
@@ -43,14 +42,14 @@ public:
     gps_position(){};
     gps_position(int d, int m, float s) :
         degrees(d), minutes(m), seconds(s)
-    {}
+	{}
 
     bool operator==(const gps_position& other) const
-    {
-        return degrees == other.degrees &&
-	    minutes == other.minutes;
-//	 	seconds == other.seconds;
-    }
+	{
+	    return degrees == other.degrees &&
+		minutes == other.minutes &&
+		seconds == other.seconds;
+	}
 };
 
 int main_serialize() {
@@ -67,6 +66,7 @@ int main_serialize() {
         oa << g;
         // archive and stream closed when destructors are called
     }
+    std::cout << "Serialized gps_position\n";
 
     // ... some time later restore the class instance to its orginal state
     gps_position newg;
@@ -79,7 +79,7 @@ int main_serialize() {
         // archive and stream closed when destructors are called
     }
     if (g == newg)
-	std::cout << "Serialization successful!\n";
+	std::cout << "Deserialization successful!\n";
     return 0;
 }
 
@@ -172,7 +172,7 @@ void boost_test()
             (cpp_int(1) << 32) - 1,
             (cpp_int(1) << 64) - 1,
             (cpp_int(1) << 128) - 1,
-            (cpp_int(1) << 256) - 1,	    
+            (cpp_int(1) << 256) - 1,
         };
         std::string bit_counts[] = { "16", "32", "64", "128", "256" };
         unsigned current_limit = 0;
@@ -182,7 +182,7 @@ void boost_test()
             {
                 std::string message = "Limit of " + bit_counts[current_limit] + " bit integers";
                 std::cout << std::setfill('.') << std::setw(digits+1) << std::right << message << std::setfill(' ') << std::endl;
-               ++current_limit;
+		++current_limit;
             }
             std::cout << std::setw(digits + 1) << std::right << results[j] << std::endl;
         }
@@ -192,6 +192,8 @@ void boost_test()
     {
 	main_serialize();
     }
+
+    std::cout<<"boost tests completed\n\n\n";
 }
 
 int main()

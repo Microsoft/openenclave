@@ -15,7 +15,7 @@ add_custom_command(
 # boost.
 add_custom_command(
   OUTPUT boost.o
-  COMMAND apkman exec clang++ -o boost.o -g -Og -c -std=c++11
+  COMMAND apkman exec clang++ -o boost.o -g -Og -c
                       ${CMAKE_CURRENT_SOURCE_DIR}/boost.cpp
   DEPENDS boost.cpp)
 
@@ -39,19 +39,17 @@ enclave_include_directories(boost_enc
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries( 
+target_link_libraries(
   boost_enc
   -nostdlib
   # Add library path and libraries.
   -L${APKMAN_ROOT}/usr/lib
   libboost_serialization.a
   libstdc++.a
-  
+
   # for __umodti3
   libgcc.a
-
   oelibcxx # For libunwind which has been patched for enclaves
   oelibc
   # Emit warnings for unresolved symbols.
   -Wl,--warn-unresolved-symbols)
- 
