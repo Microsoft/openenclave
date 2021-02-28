@@ -229,3 +229,4 @@ static void _initializer(void)
 {
     register_pthread_hooks();
 }
+
