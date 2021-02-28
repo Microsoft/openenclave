@@ -19,4 +19,8 @@ add_custom_target(apkman-init
   COMMAND apkman build-init
 )
 
+# C library tests.
 add_subdirectory(libs)
+
+# C++ library tests.
+add_subdirectory(cpp)
