@@ -27,3 +27,6 @@ add_subdirectory(libs)
 
 # C++ library tests.
 add_subdirectory(cpp)
+
+# Language runtimes.
+add_subdirectory(runtimes)
