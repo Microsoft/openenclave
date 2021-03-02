@@ -323,7 +323,7 @@ def oe_debugger_init():
     if not apkman_root:
         apkman_root = os.path.expanduser("~/.apkman/alpine-fs")
 
-    cmd = "set substitute-path /home/buildozer/aports %s/apkbuild/aports" % apkman_root
+    cmd = "set substitute-path /home/buildozer/aports %s/apkbuild/aports" % apkman_root.strip()
     print(cmd)
     gdb.execute(cmd, False, True)
     

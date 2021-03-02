@@ -11,7 +11,7 @@ add_custom_command(
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(sqlite
-  COMMAND apkman add sqlite-dev
+  COMMAND apkman add sqlite-dev sqlite-static
   DEPENDS apkman-init)
 
 add_enclave(
