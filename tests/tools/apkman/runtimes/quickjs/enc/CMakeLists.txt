@@ -21,7 +21,6 @@ add_enclave(
   71b0822f-42a3-4543-a97c-ca491f76b82c
   SOURCES
   enc.c
-  stubs.c
   ${CMAKE_CURRENT_BINARY_DIR}/test_t.c)
 
 add_dependencies(quickjs_enc quickjs)
