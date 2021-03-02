@@ -193,6 +193,7 @@ setup_alpine_fs()
 	wget "$ALPINE_ROOTFS_URL" -O alpine-minirootfs.tar.gz
 	sh -c "mkdir -p tmp && cd tmp && tar xf ../alpine-minirootfs.tar.gz"
 	cp /etc/resolv.conf tmp/etc/resolv.conf
+	echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> tmp/etc/apk/repositories
 	mv tmp "${ALPINE_FS}"
 	proot_exec sh -c "apk update && apk add shadow bash neofetch"
     fi

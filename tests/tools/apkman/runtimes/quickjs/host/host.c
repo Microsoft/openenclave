@@ -39,6 +39,6 @@ int main(int argc, char* argv[])
     result = oe_terminate_enclave(enclave);
     OE_TEST(result == OE_OK);
 
-    printf("=== passed all tests (lua)\n");
+    printf("=== passed all tests (quickjs)\n");
     return 0;
 }
