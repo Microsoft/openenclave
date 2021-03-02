@@ -2,23 +2,15 @@
 // Licensed under the MIT License.
 
 enclave {
+
     trusted {
-        public void enc_enclave_thread (
-            uint64_t enc_key);
+        public void oe_enclave_thread_launch_ecall(uint64_t host_thread_id,
+	                                           [user_check] uint64_t* thread_started);
     };
 
     untrusted {
-        void host_exit(
-            int arg);
-
-        void host_create_thread(
-            uint64_t enc_key,
-            [user_check] oe_enclave_t* enc);
-
-        int host_join_thread(
-            uint64_t enc_key);
-
-        int host_detach_thread(
-            uint64_t enc_key);
+        void oe_host_thread_create_ocall([user_check] oe_enclave_t* enc);
+        int oe_host_thread_join_ocall(uint64_t host_thread_id);
+        int oe_host_thread_detach_ocall(uint64_t host_thread_id);
     };
 }

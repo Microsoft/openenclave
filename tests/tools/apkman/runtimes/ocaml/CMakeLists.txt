@@ -7,4 +7,6 @@ if (BUILD_ENCLAVES)
   add_subdirectory(enc)
 endif ()
 
-add_enclave_test(tests/tools/apkman/ocaml ocaml_host ocaml_enc)
+add_test(
+  NAME tests/tools/apkman/ocaml
+  COMMAND bash -c "echo 1*2*3*4*5 | host/ocaml_host enc/ocaml_enc")

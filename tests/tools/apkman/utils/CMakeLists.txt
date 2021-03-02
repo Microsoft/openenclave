@@ -12,11 +12,11 @@ add_custom_command(
 
 add_enclave_library(oeencpthread
   STATIC
-  pthread_enc.cpp
+  pthread_enc.c
   pthread_t.h
 )
 
-enclave_link_libraries(oeencpthread PRIVATE oelibcxx oelibc)
+enclave_link_libraries(oeencpthread PRIVATE oelibc)
 enclave_include_directories(oeencpthread
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR})
@@ -24,7 +24,7 @@ enclave_include_directories(oeencpthread
 
 add_library(oehostpthread
   STATIC
-  pthread_host.cpp
+  pthread_host.c
   pthread_u.h
 )
 
