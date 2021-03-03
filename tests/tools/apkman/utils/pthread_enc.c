@@ -162,8 +162,13 @@ static int _pthread_join_hook(pthread_t enc_thread, void** retval)
 	oe_spin_unlock(&_lock);
     }
     if (!thread)
-	OE_RAISE(OE_NOT_FOUND);
-
+    {
+	// OE_RAISE(OE_NOT_FOUND);
+	// Assume that the thread has exited.
+	result = OE_OK;
+	goto done;
+    }
+    
     int r = 0;
     while (!thread->done)
     {
