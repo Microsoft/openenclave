@@ -148,6 +148,8 @@ ensure_dependencies()
 
 enter_chroot()
 {
+    mkdir -p "${ALPINE_FS}/home/$USER"
+    mount --bind /home/$USER "${ALPINE_FS}/home/$USER"
     mount --bind /dev     "${ALPINE_FS}/dev"
     mount --bind /dev/pts "${ALPINE_FS}/dev/pts"
     mount --bind /dev/shm "${ALPINE_FS}/dev/shm"
@@ -158,6 +160,7 @@ enter_chroot()
     PS1="apkman chroot \w# "
     sudo chroot "${ALPINE_FS}" /usr/bin/env -i \
 	 TERM=$TERM SHELL=$SHELL PS1="$PS1" /bin/sh
+    umount --recursive "${ALPINE_FS}/home/$USER"
     umount --recursive "${ALPINE_FS}/dev"
     umount --recursive "${ALPINE_FS}/proc"
     umount --recursive "${ALPINE_FS}/sys"
