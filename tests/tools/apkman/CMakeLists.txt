@@ -6,9 +6,14 @@ add_executable(apkman IMPORTED)
 set_target_properties(apkman PROPERTIES
   IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/tools/apkman/apkman)
 
+execute_process(
+  COMMAND ${PROJECT_SOURCE_DIR}/tools/apkman/apkman help
+  COMMAND_ERROR_IS_FATAL ANY
+)
+
 # Fetch apkman root folder for accessing includes and libraries.
 execute_process(
-  COMMAND  ${PROJECT_SOURCE_DIR}/tools/apkman/apkman root
+  COMMAND ${PROJECT_SOURCE_DIR}/tools/apkman/apkman root
   COMMAND_ERROR_IS_FATAL ANY
   OUTPUT_STRIP_TRAILING_WHITESPACE
   OUTPUT_VARIABLE APKMAN_ROOT)

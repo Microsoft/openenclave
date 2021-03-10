@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Copyright (c) Open Enclave SDK contributors.
 # Licensed under the MIT License.
 
@@ -30,6 +30,10 @@ fi
 
 APKMAN_DIR=${HOME_DIR}/.apkman
 CURRENT_DIR=`pwd`
+
+HOST_LOCK_FILE="$APKMAN_DIR/lock"
+HOST_LOCK_FD=8000
+LOCK_FILE="/var/lock/apkman.lock"
 
 print_usage()
 {
@@ -317,7 +321,7 @@ if ! test -f git.clone.done; then
   touch git.clone.done
 fi
 "
-    proot_exec sh -c "$PREREQS_CMD"
+    proot_exec flock "$LOCK_FILE" sh -c "$PREREQS_CMD"
     wrap_ld
 }
 
@@ -385,17 +389,18 @@ USER_INCLUDE="${ROOTFS_PATH}/usr/include"
 BUILD_USER_CXX_INCLUDE="${ROOTFS_PATH}/apkbuild/pkgs/usr/include/c++/10.2.1"
 BUILD_USER_INCLUDE="${ROOTFS_PATH}/apkbuild/pkgs/usr/include"
 
+
 case "$1" in
     "search")
-        proot_exec apk $@ -v | sort
+	proot_exec flock "$LOCK_FILE" apk $@ -v | sort
         ;;
 
     "add")
-        proot_exec apk $@
+        proot_exec flock "$LOCK_FILE" apk $@
         ;;
 
     "del")
-        proot_exec apk $@
+        proot_exec flock "$LOCK_FILE" apk $@
         ;;
 
     "root")
@@ -403,7 +408,7 @@ case "$1" in
         ;;
 
     "build-init")
-        ensure_apkbuild_prereqs
+	ensure_apkbuild_prereqs
         ;;
 
     "prepare")
@@ -440,7 +445,7 @@ case "$1" in
         print_usage
         ;;
 
-    "--init")
+    "--init")	
         ensure_apkman_dir
         ensure_dependencies
         setup_alpine_fs

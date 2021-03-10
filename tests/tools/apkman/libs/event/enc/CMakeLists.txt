@@ -57,6 +57,5 @@ enclave_link_libraries(
   oehostepoll
   oehostfs
   oehostsock
-  libsqlite3.a
   # Allow undefine symbols for unused parts of sqlite.
   -Wl,--warn-unresolved-symbols)
