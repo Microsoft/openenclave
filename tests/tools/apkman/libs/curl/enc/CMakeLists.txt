@@ -52,6 +52,7 @@ enclave_link_libraries(
   # Uncomment below line to use custom built package.
   # -L${APKMAN_ROOT}/apkbuild/pkgs/usr/lib
   -L${APKMAN_ROOT}/usr/lib
+  -L${APKMAN_ROOT}/lib
   # libcurl and dependencies.
   libcurl.a
   libz.a

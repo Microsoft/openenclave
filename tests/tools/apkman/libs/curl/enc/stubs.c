@@ -21,6 +21,12 @@ void * __memset_chk(void * dest, int c, size_t len, size_t destlen)
     return memset(dest, c, len);
 }
 
+unsigned long getauxval(unsigned long type)
+{
+    OE_UNUSED(type);
+    return 0;
+}
+
 char *secure_getenv(const char *name)
 {
     OE_UNUSED(name);

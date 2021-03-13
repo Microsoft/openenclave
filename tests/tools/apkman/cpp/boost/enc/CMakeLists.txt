@@ -48,11 +48,12 @@ target_link_libraries(
   libstdc++.a
 
   # for __umodti3
-  libgcc.a
+  ${APKMAN_ROOT}/usr/lib/gcc/x86_64-alpine-linux-musl/10.2.1/libgcc.a
   oelibcxx # For libunwind which has been patched for enclaves
   oelibc
-  # LLVM's ld can optimize away a memory leak related to iostream not
-  # cleaning up objects.
-  -fuse-ld=lld
+
+  # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
+  -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
+
   # Emit warnings for unresolved symbols.
   -Wl,--warn-unresolved-symbols)

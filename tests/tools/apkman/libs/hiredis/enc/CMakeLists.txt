@@ -54,5 +54,6 @@ enclave_link_libraries(
   oehostfs
   oehostsock
   oehostresolver
+  -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
   # Allow missing symbols for development.
   -Wl,--warn-unresolved-symbols)

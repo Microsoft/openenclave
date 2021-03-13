@@ -22,7 +22,7 @@ add_enclave(
   ${CMAKE_CURRENT_BINARY_DIR}/test_t.c)
 
 add_custom_target(zlib
-  COMMAND apkman add zlib-dev
+  COMMAND apkman add zlib-dev zlib-static
   DEPENDS apkman-init)
 
 add_dependencies(zlib_enc zlib)
@@ -43,7 +43,7 @@ enclave_compile_options(zlib_enc
 
 enclave_link_libraries(
   zlib_enc
-  -L${APKMAN_ROOT}/usr/lib
+  -L${APKMAN_ROOT}/lib
   libz.a
   oelibc
   -Wl,--warn-unresolved-symbols)

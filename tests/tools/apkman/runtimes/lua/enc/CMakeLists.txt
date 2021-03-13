@@ -48,6 +48,5 @@ enclave_link_libraries(
   liblua.a
   oelibc
   oehostfs
-  -fuse-ld=lld
   -Wl,--warn-unresolved-symbols)
 

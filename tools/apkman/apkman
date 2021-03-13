@@ -98,17 +98,14 @@ Building packages:
              to the linker to find the custom built version of the package.
 
 Execute commands:
-  -c         Execute the given command. This is useful for scripting as well as
-             to executing a command without entering the shell.
-             E.g:
-                 apkman -c ls /usr/include
-  exec       Execute a command in the current working directory. Current user's home
-             folder made available to alpine linux. Tools in the alpine-linux distribution
-             can thus be run on any file in the home folder.
+  exec       Execute a command in the current working directory. Current user's
+             home folder made as well as /home is made  available to alpine
+             linux. Tools in the alpine-linux distribution can thus be run on
+              any file under the home folder.
              E.g:
                  apkman exec clang -c foo.c
-                 Compile foo.c in current folder using the clang compiler from the alpine
-                 install.
+                 Compile foo.c in current folder using the clang compiler from
+                 the alpine install.
 
 Development:
  shell      Enter the Alpine linux install using proot.
@@ -175,11 +172,12 @@ proot_exec()
     export SHELL=/bin/sh
     export TERM=xterm-256color
     export PS1="apkman \w$ "
-    proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
-          -0 \
-          -r alpine-fs \
-          -w / \
-          "$@"
+    export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+    dist/proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
+	       -0 \
+               -r alpine-fs \
+               -w / \
+               "$@"
 }
 
 proot_exec_host()
@@ -187,8 +185,11 @@ proot_exec_host()
     export SHELL=/bin/sh
     export TERM=xterm-256color
     export PS1="apkman \w$ "
-    proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
-          -b /home/$USER \
+    export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
+    # Root home folder is /root. Therefore bind both $HOME and /home
+    dist/proot -b /dev -b /dev/pts -b /proc -b /sys -b /dev/shm \
+	  -b $HOME \
+          -b /home \
           -r alpine-fs \
           -w "$CURRENT_DIR" \
           "$@"
@@ -202,7 +203,7 @@ setup_alpine_fs()
 	cp /etc/resolv.conf tmp/etc/resolv.conf
 	echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> tmp/etc/apk/repositories
 	mv tmp "${ALPINE_FS}"
-	proot_exec sh -c "apk update && apk add shadow bash neofetch"
+	proot_exec sh -c "apk update && apk add bash"
     fi
 }
 
@@ -396,7 +397,8 @@ case "$1" in
         ;;
 
     "add")
-        proot_exec flock "$LOCK_FILE" apk $@
+        proot_exec flock "$LOCK_FILE" apk $@ \
+	    || echo "Ignoring apk add error when running in docker"
         ;;
 
     "del")
@@ -419,11 +421,6 @@ case "$1" in
     "build")
         ensure_apkbuild_prereqs
         abuild_build "$2"
-        ;;
-
-    "-c")
-        shift
-        proot_exec  $@
         ;;
 
     "exec")

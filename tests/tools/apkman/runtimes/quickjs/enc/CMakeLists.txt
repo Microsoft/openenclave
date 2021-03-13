@@ -48,9 +48,14 @@ enclave_link_libraries(
   -L${APKMAN_ROOT}/usr/lib/quickjs
   -L${APKMAN_ROOT}/usr/lib  
   libquickjs.a
-  libgcc.a
   oelibc
   oehostfs
-  -fuse-ld=lld
+
+  -L${APKMAN_ROOT}/usr/lib/gcc/x86_64-alpine-linux-musl/10.2.1
+  libgcc.a
+
+  # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
+  -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
+
   -Wl,--warn-unresolved-symbols)
 

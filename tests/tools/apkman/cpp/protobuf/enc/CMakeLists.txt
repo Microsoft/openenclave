@@ -66,8 +66,10 @@ target_link_libraries(
   libstdc++.a
   oelibcxx # For libunwind which has been patched for enclaves
   oelibc
-  # lld eliminates memory leak associated with iostream
-  -fuse-ld=lld
+
+  # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
+  -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
+
   # Warn unresolved symbols instead of failing.
   -Wl,--warn-unresolved-symbols)
  

@@ -42,5 +42,9 @@ enclave_link_libraries(
   -L${CMAKE_CURRENT_BINARY_DIR}
   -l:ocamlprogram.a
   oelibc
+
+  # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
+  -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
+
   -Wl,--warn-unresolved-symbols)
  
