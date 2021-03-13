@@ -10,7 +10,8 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(sqlite
+add_custom_target(
+  sqlite
   COMMAND apkman add sqlite-dev sqlite-static
   DEPENDS apkman-init)
 
@@ -26,9 +27,8 @@ add_enclave(
 
 add_dependencies(sqlite_enc sqlite)
 
-enclave_include_directories(sqlite_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}
+enclave_include_directories(
+  sqlite_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   # sqlite include path.
   ${APKMAN_ROOT}/usr/include)
 

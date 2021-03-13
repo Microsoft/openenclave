@@ -3,26 +3,20 @@
 
 # Create an imported executable for use by tests.
 add_executable(apkman IMPORTED)
-set_target_properties(apkman PROPERTIES
-  IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/tools/apkman/apkman)
+set_target_properties(
+  apkman PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/tools/apkman/apkman)
 
-execute_process(
-  COMMAND ${PROJECT_SOURCE_DIR}/tools/apkman/apkman help
-  COMMAND_ERROR_IS_FATAL ANY
-)
+execute_process(COMMAND ${PROJECT_SOURCE_DIR}/tools/apkman/apkman help
+                        COMMAND_ERROR_IS_FATAL ANY)
 
 # Fetch apkman root folder for accessing includes and libraries.
 execute_process(
-  COMMAND ${PROJECT_SOURCE_DIR}/tools/apkman/apkman root
-  COMMAND_ERROR_IS_FATAL ANY
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-  OUTPUT_VARIABLE APKMAN_ROOT)
+  COMMAND ${PROJECT_SOURCE_DIR}/tools/apkman/apkman root COMMAND_ERROR_IS_FATAL
+          ANY OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE APKMAN_ROOT)
 
 # Ensure that apkman is initialized.
-add_custom_target(apkman-init
-  # Setup so that packages can be built from source.
-  COMMAND apkman build-init
-)
+add_custom_target(apkman-init # Setup so that packages can be built from source.
+                  COMMAND apkman build-init)
 
 # Testing utilities.
 add_subdirectory(utils)

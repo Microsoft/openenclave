@@ -12,6 +12,6 @@ add_test(
   NAME tests/tools/apkman/zlib
   COMMAND
     ${CMAKE_COMMAND} -E env bash -c
-      "host/zlib_host enc/zlib_enc <${PROJECT_SOURCE_DIR}/CHANGELOG.md >ch.z &&\
+    "host/zlib_host enc/zlib_enc <${PROJECT_SOURCE_DIR}/CHANGELOG.md >ch.z &&\
        host/zlib_host enc/zlib_enc -d <ch.z >CHANGELOG_OUT.md &&\
        cmp -n 35431 ${PROJECT_SOURCE_DIR}/CHANGELOG.md CHANGELOG_OUT.md")

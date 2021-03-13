@@ -7,8 +7,5 @@ if (BUILD_ENCLAVES)
   add_subdirectory(enc)
 endif ()
 
-add_test(
-  NAME tests/tools/apkman/event 
-  COMMAND
-    bash "${CMAKE_CURRENT_SOURCE_DIR}/test.bash")
-
+add_test(NAME tests/tools/apkman/event
+         COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/test.bash")

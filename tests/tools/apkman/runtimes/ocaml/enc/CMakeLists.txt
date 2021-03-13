@@ -10,15 +10,15 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(ocaml
+add_custom_target(
+  ocaml
   COMMAND apkman add ocaml
   DEPENDS apkman-init)
 
 add_custom_command(
   COMMAND apkman exec /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/build.sh
   DEPENDS lexer.mll parser.mly program.ml modwrap.c
-  OUTPUT ocamlprogram.a
-) 
+  OUTPUT ocamlprogram.a)
 
 add_enclave(
   TARGET
@@ -33,18 +33,13 @@ add_enclave(
 
 add_dependencies(ocaml_enc ocaml)
 
-enclave_include_directories(ocaml_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR})
+enclave_include_directories(ocaml_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-enclave_link_libraries( 
+enclave_link_libraries(
   ocaml_enc
   -L${CMAKE_CURRENT_BINARY_DIR}
   -l:ocamlprogram.a
   oelibc
-
   # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
   -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
-
   -Wl,--warn-unresolved-symbols)
- 

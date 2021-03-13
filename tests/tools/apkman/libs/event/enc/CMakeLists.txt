@@ -10,7 +10,8 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(event
+add_custom_target(
+  event
   COMMAND apkman add libevent-dev libevent-static
   DEPENDS apkman-init)
 
@@ -28,24 +29,22 @@ add_enclave(
 
 add_dependencies(event_enc event)
 
-enclave_include_directories(event_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
+enclave_include_directories(
+  event_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
   # libevent include path.
   ${APKMAN_ROOT}/usr/include)
 
-enclave_compile_options(event_enc
-   PRIVATE
-   -Wno-implicit-int-conversion
-   -Wno-bitwise-op-parentheses
-   -Wno-shift-op-parentheses
-   -Wno-shorten-64-to-32
-   -Wno-implicit-float-conversion
-   -Wno-sign-conversion
-   -Wno-unused-parameter
-   -Wno-unused-variable
-)
+enclave_compile_options(
+  event_enc
+  PRIVATE
+  -Wno-implicit-int-conversion
+  -Wno-bitwise-op-parentheses
+  -Wno-shift-op-parentheses
+  -Wno-shorten-64-to-32
+  -Wno-implicit-float-conversion
+  -Wno-sign-conversion
+  -Wno-unused-parameter
+  -Wno-unused-variable)
 
 enclave_link_libraries(
   event_enc

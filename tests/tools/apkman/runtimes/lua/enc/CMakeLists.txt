@@ -10,7 +10,8 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(lua
+add_custom_target(
+  lua
   COMMAND apkman add lua-dev
   DEPENDS apkman-init)
 
@@ -26,27 +27,19 @@ add_enclave(
 
 add_dependencies(lua_enc lua)
 
-enclave_include_directories(lua_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}
+enclave_include_directories(
+  lua_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   # lua include path.
   ${APKMAN_ROOT}/usr/include)
 
-
-enclave_compile_options(lua_enc
-   PRIVATE
-   -Wno-implicit-int-conversion
-   -Wno-bitwise-op-parentheses
-   -Wno-shift-op-parentheses
-   -Wno-shorten-64-to-32
-   -Wno-implicit-float-conversion
-)
-
-enclave_link_libraries(
+enclave_compile_options(
   lua_enc
-  -L${APKMAN_ROOT}/usr/lib
-  liblua.a
-  oelibc
-  oehostfs
-  -Wl,--warn-unresolved-symbols)
+  PRIVATE
+  -Wno-implicit-int-conversion
+  -Wno-bitwise-op-parentheses
+  -Wno-shift-op-parentheses
+  -Wno-shorten-64-to-32
+  -Wno-implicit-float-conversion)
 
+enclave_link_libraries(lua_enc -L${APKMAN_ROOT}/usr/lib liblua.a oelibc
+                       oehostfs -Wl,--warn-unresolved-symbols)

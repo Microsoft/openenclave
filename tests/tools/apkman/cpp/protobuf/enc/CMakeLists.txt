@@ -10,8 +10,8 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-
-add_custom_target(protobuf
+add_custom_target(
+  protobuf
   COMMAND apkman add protoc protobuf-dev
   DEPENDS apkman-init)
 
@@ -19,11 +19,9 @@ set(PROTO_FILE types.proto)
 add_custom_command(
   OUTPUT types.pb.h types.pb.cc
   COMMAND apkman add protoc protobuf-dev
-  COMMAND
-      apkman exec protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/..
-                         --cpp_out=. ${PROTO_FILE}
-  DEPENDS protobuf ../${PROTO_FILE}
-)
+  COMMAND apkman exec protoc --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/..
+          --cpp_out=. ${PROTO_FILE}
+  DEPENDS protobuf ../${PROTO_FILE})
 
 add_enclave(
   TARGET
@@ -35,8 +33,8 @@ add_enclave(
   types.pb.cc
   ${CMAKE_CURRENT_BINARY_DIR}/test_t.c)
 
-
-enclave_include_directories(protobuf_enc
+enclave_include_directories(
+  protobuf_enc
   PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
   # Protobuf headers available via protobuf-dev library.
@@ -46,17 +44,17 @@ enclave_include_directories(protobuf_enc
   # C
   ${APKMAN_ROOT}/usr/include)
 
-enclave_compile_options(protobuf_enc
-   PRIVATE
-   -Wno-shorten-64-to-32
-   -Wno-bitwise-op-parentheses
-   -Wno-shift-op-parentheses
-   -Wno-sign-conversion
-   -Wno-unused-parameter
-   -Wno-implicit-int-conversion
-)
+enclave_compile_options(
+  protobuf_enc
+  PRIVATE
+  -Wno-shorten-64-to-32
+  -Wno-bitwise-op-parentheses
+  -Wno-shift-op-parentheses
+  -Wno-sign-conversion
+  -Wno-unused-parameter
+  -Wno-implicit-int-conversion)
 
-target_link_libraries( 
+target_link_libraries(
   protobuf_enc
   # Uncomment below to use custom built protobuf.
   # -L${APKMAN_ROOT}/apkbuild/pkgs/usr/lib
@@ -66,10 +64,7 @@ target_link_libraries(
   libstdc++.a
   oelibcxx # For libunwind which has been patched for enclaves
   oelibc
-
   # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
   -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
-
   # Warn unresolved symbols instead of failing.
   -Wl,--warn-unresolved-symbols)
- 

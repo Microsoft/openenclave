@@ -10,7 +10,8 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(hiredis
+add_custom_target(
+  hiredis
   COMMAND apkman add hiredis-dev
   DEPENDS apkman-init)
 
@@ -27,28 +28,26 @@ add_enclave(
 
 add_dependencies(hiredis_enc hiredis)
 
-enclave_include_directories(hiredis_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}
+enclave_include_directories(
+  hiredis_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   # Path for hiredis headers
-  ${APKMAN_ROOT}/usr/include/hiredis
-  ${APKMAN_ROOT}/usr/include)
+  ${APKMAN_ROOT}/usr/include/hiredis ${APKMAN_ROOT}/usr/include)
 
-enclave_compile_options(hiredis_enc
+enclave_compile_options(
+  hiredis_enc
   PRIVATE
   -Wno-sign-conversion
   -Wno-shorten-64-to-32
   -Wno-shift-op-parentheses
   -Wno-implicit-int-conversion
-  -Wno-bitwise-op-parentheses
-)
+  -Wno-bitwise-op-parentheses)
 
 enclave_link_libraries(
   hiredis_enc
   # Uncomment below to use custom build package.
   # -L${APKMAN_ROOT}/apkbuild/pkgs/usr/lib
   -L${APKMAN_ROOT}/usr/lib
-  libhiredis.a  
+  libhiredis.a
   oelibc
   oehostepoll
   oehostfs

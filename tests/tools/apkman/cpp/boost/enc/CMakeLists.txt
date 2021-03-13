@@ -10,7 +10,8 @@ add_custom_command(
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
     ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_custom_target(boost
+add_custom_target(
+  boost
   COMMAND apkman add boost-dev boost-static
   DEPENDS apkman-init)
 
@@ -20,7 +21,7 @@ add_custom_target(boost
 add_custom_command(
   OUTPUT boost.o
   COMMAND apkman exec clang++ -o boost.o -g -Og -c
-                      ${CMAKE_CURRENT_SOURCE_DIR}/boost.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/boost.cpp
   DEPENDS boost.cpp boost)
 
 add_enclave(
@@ -35,9 +36,7 @@ add_enclave(
 
 add_dependencies(boost_enc boost)
 
-enclave_include_directories(boost_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR})
+enclave_include_directories(boost_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(
   boost_enc
@@ -46,14 +45,11 @@ target_link_libraries(
   -L${APKMAN_ROOT}/usr/lib
   libboost_serialization.a
   libstdc++.a
-
   # for __umodti3
   ${APKMAN_ROOT}/usr/lib/gcc/x86_64-alpine-linux-musl/10.2.1/libgcc.a
   oelibcxx # For libunwind which has been patched for enclaves
   oelibc
-
   # Use apkman's ld to avoid bug with Ubuntu 18.04's binutils.
   -fuse-ld=${CMAKE_CURRENT_SOURCE_DIR}/../../../utils/ld
-
   # Emit warnings for unresolved symbols.
   -Wl,--warn-unresolved-symbols)

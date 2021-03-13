@@ -14,4 +14,3 @@ add_executable(protobuf_host host.c test_u.c)
 
 target_include_directories(protobuf_host PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(protobuf_host oehost)
- 

@@ -21,29 +21,21 @@ add_enclave(
   zpipe.c
   ${CMAKE_CURRENT_BINARY_DIR}/test_t.c)
 
-add_custom_target(zlib
+add_custom_target(
+  zlib
   COMMAND apkman add zlib-dev zlib-static
   DEPENDS apkman-init)
 
 add_dependencies(zlib_enc zlib)
 
-enclave_include_directories(zlib_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}
+enclave_include_directories(
+  zlib_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   # zlib include paths.
   ${APKMAN_ROOT}/usr/include)
 
-enclave_compile_options(zlib_enc
-   PRIVATE
-   -Wno-implicit-int-conversion
-   -Wno-bitwise-op-parentheses
-   -Wno-shift-op-parentheses
-   -Wno-shorten-64-to-32
-)
+enclave_compile_options(
+  zlib_enc PRIVATE -Wno-implicit-int-conversion -Wno-bitwise-op-parentheses
+  -Wno-shift-op-parentheses -Wno-shorten-64-to-32)
 
-enclave_link_libraries(
-  zlib_enc
-  -L${APKMAN_ROOT}/lib
-  libz.a
-  oelibc
-  -Wl,--warn-unresolved-symbols)
+enclave_link_libraries(zlib_enc -L${APKMAN_ROOT}/lib libz.a oelibc
+                       -Wl,--warn-unresolved-symbols)

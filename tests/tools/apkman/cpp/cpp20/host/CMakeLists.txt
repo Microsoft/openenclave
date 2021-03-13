@@ -8,11 +8,10 @@ add_custom_command(
   DEPENDS ${EDL_FILE} edger8r
   COMMAND
     edger8r --untrusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
-    ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR}
-    --search-path ${CMAKE_CURRENT_SOURCE_DIR}/../../../utils)
+    ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR} --search-path
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../utils)
 
 add_executable(cpp20_host host.c test_u.c)
 
 target_include_directories(cpp20_host PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(cpp20_host oehostpthread oehost)
- 

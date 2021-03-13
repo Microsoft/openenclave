@@ -8,8 +8,8 @@ add_custom_command(
   DEPENDS ${EDL_FILE} edger8r
   COMMAND
     edger8r --trusted ${EDL_FILE} --search-path ${PROJECT_SOURCE_DIR}/include
-    ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR}
-    --search-path ${CMAKE_CURRENT_SOURCE_DIR}/../../../utils)
+    ${DEFINE_OE_SGX} --search-path ${CMAKE_CURRENT_SOURCE_DIR} --search-path
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../utils)
 
 add_enclave(
   TARGET
@@ -22,29 +22,29 @@ add_enclave(
   stubs.c
   ${CMAKE_CURRENT_BINARY_DIR}/test_t.c)
 
-add_custom_target(curl
+add_custom_target(
+  curl
   COMMAND apkman add curl-dev curl-static nghttp2-static brotli-static
   DEPENDS apkman-init)
 
 add_dependencies(curl_enc curl)
 
-enclave_include_directories(curl_enc
-  PRIVATE
-  ${CMAKE_CURRENT_BINARY_DIR}
+enclave_include_directories(
+  curl_enc PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   # Include path for libcurl.
   ${APKMAN_ROOT}/usr/include)
 
-enclave_compile_options(curl_enc
-   PRIVATE
-   -Wno-implicit-int-conversion
-   -Wno-bitwise-op-parentheses
-   -Wno-shift-op-parentheses
-   -Wno-shorten-64-to-32
-   -Wno-implicit-float-conversion
-   -Wno-sign-conversion
-   -Wno-unused-parameter
-   -Wno-unused-variable
-)
+enclave_compile_options(
+  curl_enc
+  PRIVATE
+  -Wno-implicit-int-conversion
+  -Wno-bitwise-op-parentheses
+  -Wno-shift-op-parentheses
+  -Wno-shorten-64-to-32
+  -Wno-implicit-float-conversion
+  -Wno-sign-conversion
+  -Wno-unused-parameter
+  -Wno-unused-variable)
 
 enclave_link_libraries(
   curl_enc
@@ -60,12 +60,10 @@ enclave_link_libraries(
   libssl.a
   libbrotlidec-static.a
   libbrotlicommon-static.a
-
   # Use OE's openssl which has been patched to work well within enclaves.
   oecryptoopenssl
   # For missing crypto functionality use libcrpto.a.
   libcrypto.a
-
   # OE libraries needed for sockets, epoll, filesystem etc.
   oelibcxx
   oelibc
