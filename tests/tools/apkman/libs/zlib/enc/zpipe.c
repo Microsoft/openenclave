@@ -12,17 +12,17 @@
                      Avoid some compiler warnings for input and output buffers
  */
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
 #include "zlib.h"
 
 #if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(__CYGWIN__)
-#  include <fcntl.h>
-#  include <io.h>
-#  define SET_BINARY_MODE(file) setmode(fileno(file), O_BINARY)
+#include <fcntl.h>
+#include <io.h>
+#define SET_BINARY_MODE(file) setmode(fileno(file), O_BINARY)
 #else
-#  define SET_BINARY_MODE(file)
+#define SET_BINARY_MODE(file)
 #endif
 
 #define CHUNK 16384
@@ -33,7 +33,7 @@
    level is supplied, Z_VERSION_ERROR if the version of zlib.h and the
    version of the library linked do not match, or Z_ERRNO if there is
    an error reading or writing the files. */
-int def(FILE *source, FILE *dest, int level)
+int def(FILE* source, FILE* dest, int level)
 {
     int ret, flush;
     unsigned have;
@@ -50,9 +50,11 @@ int def(FILE *source, FILE *dest, int level)
         return ret;
 
     /* compress until end of file */
-    do {
+    do
+    {
         strm.avail_in = fread(in, 1, CHUNK, source);
-        if (ferror(source)) {
+        if (ferror(source))
+        {
             (void)deflateEnd(&strm);
             return Z_ERRNO;
         }
@@ -61,22 +63,24 @@ int def(FILE *source, FILE *dest, int level)
 
         /* run deflate() on input until output buffer not full, finish
            compression if all of source has been read in */
-        do {
+        do
+        {
             strm.avail_out = CHUNK;
             strm.next_out = out;
-            ret = deflate(&strm, flush);    /* no bad return value */
-            assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
+            ret = deflate(&strm, flush);   /* no bad return value */
+            assert(ret != Z_STREAM_ERROR); /* state not clobbered */
             have = CHUNK - strm.avail_out;
-            if (fwrite(out, 1, have, dest) != have || ferror(dest)) {
+            if (fwrite(out, 1, have, dest) != have || ferror(dest))
+            {
                 (void)deflateEnd(&strm);
                 return Z_ERRNO;
             }
         } while (strm.avail_out == 0);
-        assert(strm.avail_in == 0);     /* all input will be used */
+        assert(strm.avail_in == 0); /* all input will be used */
 
         /* done when last data in file processed */
     } while (flush != Z_FINISH);
-    assert(ret == Z_STREAM_END);        /* stream will be complete */
+    assert(ret == Z_STREAM_END); /* stream will be complete */
 
     /* clean up and return */
     (void)deflateEnd(&strm);
@@ -89,7 +93,7 @@ int def(FILE *source, FILE *dest, int level)
    invalid or incomplete, Z_VERSION_ERROR if the version of zlib.h and
    the version of the library linked do not match, or Z_ERRNO if there
    is an error reading or writing the files. */
-int inf(FILE *source, FILE *dest)
+int inf(FILE* source, FILE* dest)
 {
     int ret;
     unsigned have;
@@ -108,9 +112,11 @@ int inf(FILE *source, FILE *dest)
         return ret;
 
     /* decompress until deflate stream ends or end of file */
-    do {
+    do
+    {
         strm.avail_in = fread(in, 1, CHUNK, source);
-        if (ferror(source)) {
+        if (ferror(source))
+        {
             (void)inflateEnd(&strm);
             return Z_ERRNO;
         }
@@ -119,21 +125,24 @@ int inf(FILE *source, FILE *dest)
         strm.next_in = in;
 
         /* run inflate() on input until output buffer not full */
-        do {
+        do
+        {
             strm.avail_out = CHUNK;
             strm.next_out = out;
             ret = inflate(&strm, Z_NO_FLUSH);
-            assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
-            switch (ret) {
-            case Z_NEED_DICT:
-                ret = Z_DATA_ERROR;     /* and fall through */
-            case Z_DATA_ERROR:
-            case Z_MEM_ERROR:
-                (void)inflateEnd(&strm);
-                return ret;
+            assert(ret != Z_STREAM_ERROR); /* state not clobbered */
+            switch (ret)
+            {
+                case Z_NEED_DICT:
+                    ret = Z_DATA_ERROR; /* and fall through */
+                case Z_DATA_ERROR:
+                case Z_MEM_ERROR:
+                    (void)inflateEnd(&strm);
+                    return ret;
             }
             have = CHUNK - strm.avail_out;
-            if (fwrite(out, 1, have, dest) != have || ferror(dest)) {
+            if (fwrite(out, 1, have, dest) != have || ferror(dest))
+            {
                 (void)inflateEnd(&strm);
                 return Z_ERRNO;
             }
@@ -151,29 +160,30 @@ int inf(FILE *source, FILE *dest)
 void zerr(int ret)
 {
     fputs("zpipe: ", stderr);
-    switch (ret) {
-    case Z_ERRNO:
-        if (ferror(stdin))
-            fputs("error reading stdin\n", stderr);
-        if (ferror(stdout))
-            fputs("error writing stdout\n", stderr);
-        break;
-    case Z_STREAM_ERROR:
-        fputs("invalid compression level\n", stderr);
-        break;
-    case Z_DATA_ERROR:
-        fputs("invalid or incomplete deflate data\n", stderr);
-        break;
-    case Z_MEM_ERROR:
-        fputs("out of memory\n", stderr);
-        break;
-    case Z_VERSION_ERROR:
-        fputs("zlib version mismatch!\n", stderr);
+    switch (ret)
+    {
+        case Z_ERRNO:
+            if (ferror(stdin))
+                fputs("error reading stdin\n", stderr);
+            if (ferror(stdout))
+                fputs("error writing stdout\n", stderr);
+            break;
+        case Z_STREAM_ERROR:
+            fputs("invalid compression level\n", stderr);
+            break;
+        case Z_DATA_ERROR:
+            fputs("invalid or incomplete deflate data\n", stderr);
+            break;
+        case Z_MEM_ERROR:
+            fputs("out of memory\n", stderr);
+            break;
+        case Z_VERSION_ERROR:
+            fputs("zlib version mismatch!\n", stderr);
     }
 }
 
 /* compress or decompress from stdin to stdout */
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     int ret;
 
@@ -182,7 +192,8 @@ int main(int argc, char **argv)
     SET_BINARY_MODE(stdout);
 
     /* do compression if no arguments */
-    if (argc == 1) {
+    if (argc == 1)
+    {
         ret = def(stdin, stdout, Z_DEFAULT_COMPRESSION);
         if (ret != Z_OK)
             zerr(ret);
@@ -190,7 +201,8 @@ int main(int argc, char **argv)
     }
 
     /* do decompression if -d specified */
-    else if (argc == 2 && strcmp(argv[1], "-d") == 0) {
+    else if (argc == 2 && strcmp(argv[1], "-d") == 0)
+    {
         ret = inf(stdin, stdout);
         if (ret != Z_OK)
             zerr(ret);
@@ -198,7 +210,8 @@ int main(int argc, char **argv)
     }
 
     /* otherwise, report usage */
-    else {
+    else
+    {
         fputs("zpipe usage: zpipe [-d] < source > dest\n", stderr);
         return 1;
     }

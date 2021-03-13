@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <wchar.h>
 
-
 int issetugid()
 {
     return 0;
@@ -50,8 +49,8 @@ OE_DEFINE_SYSCALL2(SYS_clock_gettime)
     if (clock_id != CLOCK_REALTIME)
     {
         /* Only supporting CLOCK_REALTIME */
-        //oe_assert("clock_gettime(): panic" == NULL);
-        //goto done;
+        // oe_assert("clock_gettime(): panic" == NULL);
+        // goto done;
     }
 
     if ((msec = oe_get_time()) == (uint64_t)-1)
@@ -69,8 +68,8 @@ done:
 
 struct sockaddr;
 typedef size_t socklen_t;
-int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
-int accept4(int sockfd, struct sockaddr *addr, socklen_t *addrlen, int flags)
+int accept(int sockfd, struct sockaddr* addr, socklen_t* addrlen);
+int accept4(int sockfd, struct sockaddr* addr, socklen_t* addrlen, int flags)
 {
     OE_UNUSED(flags);
     return accept(sockfd, addr, addrlen);

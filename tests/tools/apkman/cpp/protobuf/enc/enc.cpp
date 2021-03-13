@@ -15,8 +15,8 @@
 #include <sstream>
 #include <string>
 
-#include "types.pb.h"
 #include <google/protobuf/util/json_util.h>
+#include "types.pb.h"
 
 int test_protobufs()
 {
@@ -45,7 +45,7 @@ int test_protobufs()
     std::ostringstream os;
     market.SerializeToOstream(&os);
     std::cout << "Serialized objects.\n";
-    
+
     std::istringstream in(os.str());
     types::Market market2;
     market2.ParseFromIstream(&in);
@@ -53,7 +53,7 @@ int test_protobufs()
 
     std::string json;
     google::protobuf::util::MessageToJsonString(market2, &json);
-    std::cout<< json << std::endl;
+    std::cout << json << std::endl;
     std::cout << " Converted to json.\n";
 
     types::Market market3;
@@ -66,7 +66,7 @@ int test_protobufs()
 
     OE_TEST(json == json2);
     std::cout << "Json round-trip successful.\n";
-    
+
     // Optional:  Delete all global objects allocated by libprotobuf.
     google::protobuf::ShutdownProtobufLibrary();
 

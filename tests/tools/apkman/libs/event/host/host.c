@@ -40,6 +40,6 @@ int main(int argc, char* argv[])
     OE_TEST(result == OE_OK);
 
     printf("=== passed all tests (libevent)\n");
-    
+
     return 0;
 }

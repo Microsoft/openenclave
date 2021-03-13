@@ -25,9 +25,9 @@ int enc_main(int argc, char** argv)
     OE_TEST(oe_load_module_host_socket_interface() == OE_OK);
     OE_TEST(oe_load_module_host_epoll() == OE_OK);
     OE_TEST(oe_load_module_host_resolver() == OE_OK);
-    
+
     ret = main(argc, argv);
-    
+
     oe_umount("/");
     return ret;
 }

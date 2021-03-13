@@ -1068,7 +1068,7 @@ void __oe_handle_main(
     // Setup whether enclave can be debugged or not.
     // This is used by tracing, ocall statck stitching, and relocations.
     oe_initialize_is_enclave_debug_allowed(td);
-    
+
     // Initialize the enclave the first time it is ever entered. Note that
     // this function DOES NOT call global constructors. Global construction
     // is performed while handling OE_ECALL_INIT_ENCLAVE.

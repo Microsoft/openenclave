@@ -7,15 +7,17 @@
 
 int main(int argc, char** argv);
 
-int enc_main(int argc,  char** argv)
+int enc_main(int argc, char** argv)
 {
     return main(argc, argv);
 }
 
 const void* __dso_handle = NULL;
 
-extern "C"
-int get_nprocs() { return 4; }
+extern "C" int get_nprocs()
+{
+    return 4;
+}
 
 OE_SET_ENCLAVE_SGX(
     1,    /* ProductID */

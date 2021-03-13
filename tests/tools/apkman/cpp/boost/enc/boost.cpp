@@ -6,15 +6,14 @@
 
 #include <boost/bimap.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 #include <vector>
 
-
 // include headers that implement a archive in simple text format
-#include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 
 /////////////////////////////////////////////////////////////
 // gps coordinate
@@ -23,36 +22,37 @@
 //
 class gps_position
 {
-private:
+  private:
     friend class boost::serialization::access;
     // When the class Archive corresponds to an output archive, the
     // & operator is defined similar to <<.  Likewise, when the class Archive
     // is a type of input archive the & operator is defined similar to >>.
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-	{
-	    ar & degrees;
-	    ar & minutes;
-	    ar & seconds;
-	}
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version)
+    {
+        ar& degrees;
+        ar& minutes;
+        ar& seconds;
+    }
     int degrees;
     int minutes;
     float seconds;
-public:
+
+  public:
     gps_position(){};
-    gps_position(int d, int m, float s) :
-        degrees(d), minutes(m), seconds(s)
-	{}
+    gps_position(int d, int m, float s) : degrees(d), minutes(m), seconds(s)
+    {
+    }
 
     bool operator==(const gps_position& other) const
-	{
-	    return degrees == other.degrees &&
-		minutes == other.minutes &&
-		seconds == other.seconds;
-	}
+    {
+        return degrees == other.degrees && minutes == other.minutes &&
+               seconds == other.seconds;
+    }
 };
 
-int main_serialize() {
+int main_serialize()
+{
     // create and open a character archive for output
     std::ostringstream ofs;
 
@@ -79,18 +79,19 @@ int main_serialize() {
         // archive and stream closed when destructors are called
     }
     if (g == newg)
-	std::cout << "Deserialization successful!\n";
+        std::cout << "Deserialization successful!\n";
     return 0;
 }
 
-template< class MapType >
-void print_map(const MapType & map,
-               const std::string & separator,
-               std::ostream & os )
+template <class MapType>
+void print_map(
+    const MapType& map,
+    const std::string& separator,
+    std::ostream& os)
 {
     typedef typename MapType::const_iterator const_iterator;
 
-    for( const_iterator i = map.begin(), iend = map.end(); i != iend; ++i )
+    for (const_iterator i = map.begin(), iend = map.end(); i != iend; ++i)
     {
         os << i->first << separator << i->second << std::endl;
     }
@@ -101,20 +102,19 @@ void boost_test()
     // bimap
     {
         // Soccer World cup
-        typedef boost::bimap< std::string, int > results_bimap;
+        typedef boost::bimap<std::string, int> results_bimap;
         typedef results_bimap::value_type position;
 
         results_bimap results;
-        results.insert( position("Argentina"    ,1) );
-        results.insert( position("Spain"        ,2) );
-        results.insert( position("Germany"      ,3) );
-        results.insert( position("France"       ,4) );
+        results.insert(position("Argentina", 1));
+        results.insert(position("Spain", 2));
+        results.insert(position("Germany", 3));
+        results.insert(position("France", 4));
 
         std::cout << "The number of countries is " << results.size()
                   << std::endl;
 
-        std::cout << "The winner is " << results.right.at(1)
-                  << std::endl
+        std::cout << "The winner is " << results.right.at(1) << std::endl
                   << std::endl;
 
         std::cout << "Countries names ordered by their final position:"
@@ -122,15 +122,15 @@ void boost_test()
 
         // results.right works like a std::map< int, std::string >
 
-        print_map( results.right, ") ", std::cout );
+        print_map(results.right, ") ", std::cout);
 
         std::cout << std::endl
                   << "Countries names ordered alphabetically along with"
-            "their final position:"
+                     "their final position:"
                   << std::endl;
 
         // results.left works like a std::map< std::string, int >
-        print_map( results.left, " ends in position ", std::cout );
+        print_map(results.left, " ends in position ", std::cout);
     }
 
     // multiprecision
@@ -154,7 +154,7 @@ void boost_test()
         cpp_int factorial = 1;
         //
         // Cycle through the factorials till we reach the limit:
-        while(factorial < limit)
+        while (factorial < limit)
         {
             results.push_back(factorial);
             ++i;
@@ -174,25 +174,28 @@ void boost_test()
             (cpp_int(1) << 128) - 1,
             (cpp_int(1) << 256) - 1,
         };
-        std::string bit_counts[] = { "16", "32", "64", "128", "256" };
+        std::string bit_counts[] = {"16", "32", "64", "128", "256"};
         unsigned current_limit = 0;
-        for(unsigned j = 0; j < results.size(); ++j)
+        for (unsigned j = 0; j < results.size(); ++j)
         {
-            if(limits[current_limit] < results[j])
+            if (limits[current_limit] < results[j])
             {
-                std::string message = "Limit of " + bit_counts[current_limit] + " bit integers";
-                std::cout << std::setfill('.') << std::setw(digits+1) << std::right << message << std::setfill(' ') << std::endl;
-		++current_limit;
+                std::string message =
+                    "Limit of " + bit_counts[current_limit] + " bit integers";
+                std::cout << std::setfill('.') << std::setw(digits + 1)
+                          << std::right << message << std::setfill(' ')
+                          << std::endl;
+                ++current_limit;
             }
-            std::cout << std::setw(digits + 1) << std::right << results[j] << std::endl;
+            std::cout << std::setw(digits + 1) << std::right << results[j]
+                      << std::endl;
         }
     }
 
     // serialization
     {
-	main_serialize();
+        main_serialize();
     }
 
-    std::cout<<"boost tests completed\n";
+    std::cout << "boost tests completed\n";
 }
-

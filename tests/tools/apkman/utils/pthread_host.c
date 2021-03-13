@@ -6,27 +6,27 @@
 
 #include "pthread_u.h"
 
-typedef struct thread_arg {
+typedef struct thread_arg
+{
     oe_enclave_t* enc;
     uint64_t thread_started;
 } thread_arg_t;
 
 static void* _launch_enclave_thread(void* a)
 {
-    thread_arg_t* arg = (thread_arg_t*) a;
-    oe_enclave_thread_launch_ecall(arg->enc,
-				   (uint64_t)pthread_self(),
-				   &arg->thread_started);
+    thread_arg_t* arg = (thread_arg_t*)a;
+    oe_enclave_thread_launch_ecall(
+        arg->enc, (uint64_t)pthread_self(), &arg->thread_started);
     return NULL;
 }
 
 void oe_host_thread_create_ocall(oe_enclave_t* enc)
 {
-    thread_arg_t arg = { enc, 0 };
+    thread_arg_t arg = {enc, 0};
     pthread_t id = 0;
     pthread_create(&id, NULL, _launch_enclave_thread, &arg);
     while (((volatile thread_arg_t*)&arg)->thread_started == 0)
-	usleep(1);
+        usleep(1);
 }
 
 int oe_host_thread_join_ocall(uint64_t host_thread_id)

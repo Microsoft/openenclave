@@ -32,24 +32,24 @@ void test_curl(CURL* curl, const char* url)
 
 int main(int argc, char** argv)
 {
-    CURL *curl = curl_easy_init();
+    CURL* curl = curl_easy_init();
 
     if (argc >= 2)
     {
-	for(int i=1; i < argc; ++i)
-	    test_curl(curl, argv[i]);
+        for (int i = 1; i < argc; ++i)
+            test_curl(curl, argv[i]);
     }
     else
     {
-	// The first website.
-	test_curl(curl, "http://info.cern.ch");
+        // The first website.
+        test_curl(curl, "http://info.cern.ch");
     }
-    
+
     curl_easy_cleanup(curl);
     return 0;
 }
 
-//extern void register_pthread_hooks(void);
+// extern void register_pthread_hooks(void);
 int enc_main(int argc, char** argv)
 {
     int ret = -1;
@@ -60,14 +60,13 @@ int enc_main(int argc, char** argv)
     OE_TEST(oe_load_module_host_socket_interface() == OE_OK);
     OE_TEST(oe_load_module_host_epoll() == OE_OK);
     OE_TEST(oe_load_module_host_resolver() == OE_OK);
-    //register_pthread_hooks();
+    // register_pthread_hooks();
 
     ret = main(argc, (char**)argv);
     oe_umount("/");
 
     return ret;
 }
-
 
 OE_SET_ENCLAVE_SGX(
     1,    /* ProductID */

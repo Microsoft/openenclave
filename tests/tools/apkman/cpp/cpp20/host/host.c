@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
              argv[1], OE_ENCLAVE_TYPE_SGX, flags, NULL, 0, &enclave)) != OE_OK)
         oe_put_err("oe_create_enclave(): result=%u", result);
 
-    result = enc_main(enclave, &return_val, argc-1, argv+1);
+    result = enc_main(enclave, &return_val, argc - 1, argv + 1);
 
     if (result != OE_OK)
         oe_put_err("oe_call_enclave() failed: result=%u", result);
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     // C++ iostream leaks an object. Not sure if we can do anything about it.
     OE_TEST(result == OE_OK || result == OE_MEMORY_LEAK);
 
-    printf("=== passed all tests (cpp20)\n");    
+    printf("=== passed all tests (cpp20)\n");
 
     return 0;
 }

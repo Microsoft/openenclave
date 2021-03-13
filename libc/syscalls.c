@@ -42,8 +42,7 @@ OE_DEFINE_SYSCALL2(SYS_munmap)
     return EPERM;
 }
 
-weak
-OE_DEFINE_SYSCALL2(SYS_clock_gettime)
+weak OE_DEFINE_SYSCALL2(SYS_clock_gettime)
 {
     clockid_t clock_id = (clockid_t)arg1;
     struct timespec* tp = (struct timespec*)arg2;

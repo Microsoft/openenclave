@@ -19,22 +19,25 @@ void oe_initialize_is_enclave_debug_allowed(oe_sgx_td_t* td)
 {
     if (!_initialized)
     {
-	if (td->simulate)
-	{
-	    // enclave in simulate mode is treated as debug_allowed
-	    _is_enclave_debug_allowed = true;
-	}
-	else
-	{
-	    // get a report on the enclave itself for enclave identity information
-	    sgx_report_t sgx_report;
-	    oe_result_t result = sgx_create_report(NULL, 0, NULL, 0, &sgx_report);
-	    if (result != OE_OK)
-		return;
+        if (td->simulate)
+        {
+            // enclave in simulate mode is treated as debug_allowed
+            _is_enclave_debug_allowed = true;
+        }
+        else
+        {
+            // get a report on the enclave itself for enclave identity
+            // information
+            sgx_report_t sgx_report;
+            oe_result_t result =
+                sgx_create_report(NULL, 0, NULL, 0, &sgx_report);
+            if (result != OE_OK)
+                return;
 
-	    _is_enclave_debug_allowed = (sgx_report.body.attributes.flags & SGX_FLAGS_DEBUG) != 0;
-	}
-	_initialized = true;
+            _is_enclave_debug_allowed =
+                (sgx_report.body.attributes.flags & SGX_FLAGS_DEBUG) != 0;
+        }
+        _initialized = true;
     }
 }
 

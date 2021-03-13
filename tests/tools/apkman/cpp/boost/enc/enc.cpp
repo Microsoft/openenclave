@@ -7,7 +7,7 @@
 
 void boost_test();
 
-int enc_main(int argc,  char** argv)
+int enc_main(int argc, char** argv)
 {
     OE_UNUSED(argc);
     OE_UNUSED(argv);
@@ -19,12 +19,11 @@ int enc_main(int argc,  char** argv)
 // Default locale is C.
 #include <locale.h>
 static char _locale[256] = "C";
-extern "C"
-char* setlocale(int category, const char* locale)
+extern "C" char* setlocale(int category, const char* locale)
 {
     OE_UNUSED(category);
     if (locale == NULL)
-	return _locale;
+        return _locale;
     sprintf(_locale, "%s", locale);
     return _locale;
 }

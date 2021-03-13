@@ -16,9 +16,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <quickjs/quickjs.h>
 #include <quickjs/quickjs-libc.h>
-
+#include <quickjs/quickjs.h>
 
 char code[10 * 1024];
 
@@ -47,17 +46,19 @@ int enc_main(int argc, char** argv)
         js_std_set_worker_new_context_func(JS_NewContext);
         JSContext* ctx = JS_NewContext(rt);
         JS_SetModuleLoaderFunc(rt, NULL, js_module_loader, NULL);
-        js_std_add_helpers(ctx, argc-1, argv+1);
+        js_std_add_helpers(ctx, argc - 1, argv + 1);
 
-        for (int i=1; i < argc; ++i)
+        for (int i = 1; i < argc; ++i)
         {
             char* code = get_code(argv[i]);
             int len = strlen(code);
             const char* filename = (argv[i] != code) ? argv[i] : "unnamed.js";
-            int flags = JS_DetectModule(code, len) ? JS_EVAL_TYPE_MODULE : JS_EVAL_TYPE_GLOBAL;
+            int flags = JS_DetectModule(code, len) ? JS_EVAL_TYPE_MODULE
+                                                   : JS_EVAL_TYPE_GLOBAL;
 
             JSValue val = JS_Eval(ctx, code, strlen(code), filename, flags);
-            if (JS_IsException(val)) {
+            if (JS_IsException(val))
+            {
                 js_std_dump_error(ctx);
             }
             JS_FreeValue(ctx, val);

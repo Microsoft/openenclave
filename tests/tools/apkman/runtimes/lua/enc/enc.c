@@ -20,7 +20,6 @@
 #include <lua.h>
 #include <lualib.h>
 
-
 char code[10 * 1024];
 
 const char* get_code(const char* arg)
